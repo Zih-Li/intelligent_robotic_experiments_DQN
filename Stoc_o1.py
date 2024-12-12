@@ -255,7 +255,10 @@ class DQNAgent:
 
 if __name__ == '__main__':
     # 仅在直接运行本文件时执行下列代码，如果作为模块被import，则不执行
-
+    '''
+    test
+    '''
+    test = True
     # 初始化环境（不渲染）和智能体
     env = DroneEnv(render_mode=False)
     agent = DQNAgent(state_size=2, action_size=env.action_space.n)
@@ -264,33 +267,35 @@ if __name__ == '__main__':
     batch_size = 32
     reward_list = []  # 用于记录每个回合的总奖励
 
+    if not test:
     # 训练循环
-    for episode in range(num_episodes):
-        state = env.reset()
-        done = False
-        total_reward = 0
+        for episode in range(num_episodes):
+            state = env.reset()
+            done = False
+            total_reward = 0
 
-        step_count = 0
-        while not done:
-            # 根据当前策略选择动作
-            action = agent.act(state)
-            # 执行动作并观察下一个状态和奖励
-            next_state, reward, done, _ = env.step(action)
-            # 将经验存储到replay buffer中
-            agent.remember(state, action, reward, next_state, done)
-            state = next_state
-            total_reward += reward
-            step_count += 1
+            step_count = 0
+            while not done:
+                # 根据当前策略选择动作
+                action = agent.act(state)
+                # 执行动作并观察下一个状态和奖励
+                next_state, reward, done, _ = env.step(action)
+                # 将经验存储到replay buffer中
+                agent.remember(state, action, reward, next_state, done)
+                state = next_state
+                total_reward += reward
+                step_count += 1
 
-        # 使用小批量数据进行训练
-        agent.replay(batch_size)
-        reward_list.append(total_reward)
-        print(f"Episode {episode + 1}: Total Reward: {total_reward}, Epsilon: {agent.epsilon}")
+            # 使用小批量数据进行训练
+            agent.replay(batch_size)
+            reward_list.append(total_reward)
+            print(f"Episode {episode + 1}: Total Reward: {total_reward}, Epsilon: {agent.epsilon}")
 
         # 每隔100回合保存模型
         if (episode + 1 == 500):
             agent.save_model(f"dqn_model_episode_{episode + 1}.pth")
-
+    if test:
+        agent.load_model("dqn_model_episode_500.pth")
     # 测试训练得到的智能体，渲染环境观察行为
     test_env = DroneEnv(render_mode=True)
     num_test_episodes = 10
