@@ -1,6 +1,0 @@
-gym==0.26.2
-numpy
-pygame==2.6.1
-pyserial==3.5
-torch==2.5.1
-# 可去掉版本号后安装
