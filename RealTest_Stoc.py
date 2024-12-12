@@ -1,8 +1,8 @@
 import time
 import torch
 import numpy as np
-from SerialThread import SerialThread  # 假设SerialThread相关类已在SerialThread.py中
-from Stoc_o1 import DQNAgent, DroneEnv  # 假设Stoc_o1中定义了DQNAgent, DroneEnv
+from SerialThread import SerialThread
+from Stoc_o1 import DQNAgent, DroneEnv
 
 
 # 创建环境
@@ -15,7 +15,7 @@ agent = DQNAgent(state_size=state_size, action_size=action_size)
 agent.load_model("dqn_model_episode_500.pth")  # 模型路径
 
 # 创建串口控制对象
-st = SerialThread("COM3")  # 请替换为正确的串口号
+st = SerialThread("COM3")  # 替换为正确的串口号
 time.sleep(2)  # 等待串口线程稳定
 
 # 起飞
@@ -36,11 +36,10 @@ while not done:
     action = torch.argmax(q_values).item()
 
     # 将动作映射到无人机的控制指令（此处仅为示例，需要实际指令）
-    # 假设您在CommandConstructor中实现了对应方向移动的指令(如left, right等)
+    # 在CommandConstructor中实现了对应方向移动的指令(如left, right等)
     # 若没有，可考虑使用forward/backward,rotate等替代动作。
     if action == 0:
         # Left动作
-        # 此处需根据您的CommandConstructor提供的API来编写
         st.send().left(50)
     elif action == 1:
         # Down动作
@@ -51,8 +50,6 @@ while not done:
         st.send().right(50)
     elif action == 3:
         # Up动作
-        # 如果没有升高命令，可以考虑takeoff或者前进替换
-        # 或者使用pitch/roll控制实现“上移”效果(需自行定义)
         st.send().forward(50)
 
     time.sleep(2)  # 给无人机一定时间执行动作
